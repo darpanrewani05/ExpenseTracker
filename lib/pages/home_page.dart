@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10), // Space between total and graph
               // Bar Chart
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: SizedBox(
                   height: 200,
                   child: MyBarGraph(
