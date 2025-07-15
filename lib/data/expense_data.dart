@@ -48,7 +48,7 @@ class ExpenseData extends ChangeNotifier {
       overallExpenseList[index] = ExpenseItem(
         name: newName,
         amount: newAmount,
-        dateTime: newDate, // Keep old date
+        dateTime: newDate, // update with new date
       );
       db.saveData(overallExpenseList);
       notifyListeners();

@@ -181,10 +181,10 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           appBar: AppBar(
             title: Text("Expense Tracker"),
-            backgroundColor: Colors.grey[300], // you can change color
+            backgroundColor: Colors.grey[300],
             foregroundColor: Colors.black, // text/icon color
             elevation: 0, // flat look
-            centerTitle: true, // center the title (optional)
+            centerTitle: true,
           ),
           backgroundColor: Colors.grey[300],
           floatingActionButton: FloatingActionButton.small(
