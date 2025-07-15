@@ -5,7 +5,7 @@ class ExpenseTile extends StatelessWidget {
   final String name;
   final String amount;
   final DateTime dateTime;
-  final void Function(BuildContext)? deleteTapped; // ✅ Fixed
+  final void Function(BuildContext)? deleteTapped;
   final void Function()? onTap;
 
   ExpenseTile({
