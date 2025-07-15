@@ -6,6 +6,7 @@ class ExpenseTile extends StatelessWidget {
   final String amount;
   final DateTime dateTime;
   final void Function(BuildContext)? deleteTapped; // ✅ Fixed
+  final void Function()? onTap;
 
   ExpenseTile({
     super.key,
@@ -13,6 +14,8 @@ class ExpenseTile extends StatelessWidget {
     required this.amount,
     required this.dateTime,
     required this.deleteTapped,
+    required this.onTap,
+
   });
 
   @override
@@ -30,6 +33,7 @@ class ExpenseTile extends StatelessWidget {
         ],
       ),
       child: ListTile(
+        onTap: onTap,
         title: Text(name),
         subtitle: Text(
           '${dateTime.day} / ${dateTime.month} / ${dateTime.year}',

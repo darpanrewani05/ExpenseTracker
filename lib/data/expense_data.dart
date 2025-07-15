@@ -41,6 +41,20 @@ class ExpenseData extends ChangeNotifier {
     db.saveData(overallExpenseList);
   }
 
+  // update expense
+  void updateExpense(ExpenseItem oldExpense, String newName, String newAmount, DateTime newDate) {
+    int index = overallExpenseList.indexOf(oldExpense);
+    if (index != -1) {
+      overallExpenseList[index] = ExpenseItem(
+        name: newName,
+        amount: newAmount,
+        dateTime: newDate, // Keep old date
+      );
+      db.saveData(overallExpenseList);
+      notifyListeners();
+    }
+  }
+
   // get total expense for each day of current week
   List<double> calculateDailyExpenseSummary() {
     DateTime startOfWeek = startOfWeekDate(); // Sunday

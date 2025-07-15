@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Add new expense'),
+        title: Text('Add New Expense'),
 // In the dialog:
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -40,6 +40,9 @@ class _HomePageState extends State<HomePage> {
               controller: newExpenseAmountController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(hintText: "Expense Amount"),
+            ),
+            SizedBox(
+              height: 10,
             ),
             TextButton(
               onPressed: () async {
@@ -56,7 +59,7 @@ class _HomePageState extends State<HomePage> {
                 }
               },
               child: Text(
-                  "Pick Date: ${selectedDate.toLocal().toString().split(' ')[0]}"),
+                  "Pick Date: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}"),
             )
           ],
         ),
@@ -101,6 +104,73 @@ class _HomePageState extends State<HomePage> {
     newExpenseAmountController.clear();
   }
 
+  void editExpense(ExpenseItem oldExpense) {
+    final nameController = TextEditingController(text: oldExpense.name);
+    final amountController = TextEditingController(text: oldExpense.amount);
+    DateTime selectedDate = oldExpense.dateTime;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Edit Text"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(hintText: "Expense Name"),
+            ),
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(hintText: "Expense Amount"),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              child: Text(
+                  "Update Date: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}"),
+              onPressed: () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: selectedDate,
+                  firstDate: DateTime(2020),
+                  lastDate: DateTime.now(),
+                );
+                if (pickedDate != null) {
+                  selectedDate = pickedDate;
+                }
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Provider.of<ExpenseData>(context, listen: false).updateExpense(
+                oldExpense,
+                nameController.text,
+                amountController.text,
+                selectedDate,
+              );
+              Navigator.pop(context);
+            },
+            child: Text(
+              "Update",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Cancel",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ExpenseData>(
@@ -109,20 +179,26 @@ class _HomePageState extends State<HomePage> {
             .calculateDailyExpenseSummary()
             .fold(0, (sum, item) => sum + item);
         return Scaffold(
+          appBar: AppBar(
+            title: Text("Expense Tracker"),
+            backgroundColor: Colors.grey[300], // you can change color
+            foregroundColor: Colors.black, // text/icon color
+            elevation: 0, // flat look
+            centerTitle: true, // center the title (optional)
+          ),
           backgroundColor: Colors.grey[300],
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: FloatingActionButton.small(
             onPressed: addNewExpense,
             child: Icon(Icons.add, color: Colors.white),
             backgroundColor: Colors.black,
           ),
           body: Column(
             children: [
-              const SizedBox(height: 60),
-
+              SizedBox(height: 10,),
               // Week Total aligned with chart
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
+                child: Row(
                   children: [
                     Text(
                       'Week Total: ',
@@ -139,7 +215,8 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10), // Space between total and graph
               // Bar Chart
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: SizedBox(
                   height: 200,
                   child: MyBarGraph(
@@ -160,6 +237,7 @@ class _HomePageState extends State<HomePage> {
                       dateTime: item.dateTime,
                       deleteTapped: (Context) =>
                           deleteExpense(value.getAllExpenseList()[index]),
+                      onTap: () => editExpense(item),
                     );
                   },
                 ),
